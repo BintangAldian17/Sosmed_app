@@ -1,0 +1,167 @@
+import Conversation from "../../models/Conversation.js";
+import Chat from "../../models/ChatModel.js";
+import { Op, Sequelize } from "sequelize";
+import Users from "../../models/UsersModel.js";
+
+export const sendMessage = async (req, res) => {
+    const { reciverId, message } = req.body
+    try {
+        const checkConversation = await Conversation.findOne({
+            where: {
+                [Op.or]: [{
+                    senderId: req.id,
+                    reciverId: reciverId
+                }, {
+                    senderId: reciverId,
+                    reciverId: req.id
+                }]
+
+            }
+        })
+        if (!checkConversation) {
+            const conversation = await Conversation.create({
+                senderId: req.id,
+                reciverId: reciverId
+            })
+            await Chat.create({
+                conversationId: conversation.id,
+                senderId: req.id,
+                message: message
+            })
+            return res.status(200).json('Conversation has been Created')
+        } else if (checkConversation) {
+            await Chat.create({
+                conversationId: checkConversation.id,
+                senderId: req.id,
+                message: message
+            })
+            return res.status(200).json('Sending Chat Successfuly')
+        } else {
+
+            return res.status(400).json('Conversation Allready exsist')
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).json(error)
+    }
+}
+
+export const getConversation = async (req, res) => {
+    const { id } = req.params
+    try {
+        const conversation = await Chat.findAll({
+            where: {
+                conversationId: id
+            },
+            include: [{
+                model: Users,
+                attributes: ['id', 'avatar', 'username']
+            }],
+            order: [['createdAt', 'ASC']]
+        })
+        const lastConversation = await Chat.findOne({
+            where: {
+                conversationId: id
+            },
+            order: [['createdAt', 'DESC']]
+        })
+        return res.status(200).json(conversation)
+    } catch (error) {
+        console.log(error);
+        res.status(500).json(error)
+    }
+}
+
+export const getAllConversation = async (req, res) => {
+    const { userId } = req.params
+    try {
+        const conversation = await Users.findAll({
+            where: {
+                id: userId
+            },
+            attributes: [],
+            include: [{ model: Users, as: 'sender', through: Conversation, attributes: ['id', 'username', 'avatar'] }, { model: Users, as: 'reciver', through: Conversation, attributes: ['id', 'username', 'avatar'] }]
+        })
+        const allConversation = [].concat(...conversation.map(item => [...item.sender, ...item.reciver]))
+        const getConversationId = allConversation.map(e => e.conversation.id)
+        console.log(getConversationId);
+        const lastConversation = await Chat.findAll({
+            where: {
+                conversationId: {
+                    [Op.in]: getConversationId
+                }
+            },
+            group: ['conversationId'],
+            attributes: ['conversationId', [Sequelize.fn('max', Sequelize.col('createdAt')), 'createdAt'],
+                [
+                    Sequelize.literal(`(
+        SELECT message FROM Chats AS c2
+        WHERE c2.conversationId = Chat.conversationId
+        AND c2.createdAt = (
+          SELECT MAX(createdAt) FROM Chats AS c3
+          WHERE c3.conversationId = Chat.conversationId
+        )
+      )`),
+                    'message'
+                ]],
+
+        })
+        const results = allConversation.map(user => {
+            const conversation = lastConversation.find(conv => conv.conversationId === user.conversation.id)
+            return {
+                id: user.id, username: user.username, avatar: user.avatar, conversation: conversation ? {
+                    message: conversation.message, conversationId: conversation.conversationId, createdAt: conversation.createdAt
+                } : null
+            }
+        })
+        return res.status(200).json(results)
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json(error)
+    }
+}
+
+export const getLastConversation = async (req, res) => {
+    const { id } = req.params
+    try {
+        const lastConversation = await Chat.findOne({
+            where: {
+                conversationId: id
+            },
+            order: [['createdAt', 'DESC']]
+        })
+        return res.status(200).json(lastConversation)
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json(error)
+    }
+}
+
+export const getDetailParticipan = async (req, res) => {
+    const { id } = req.params
+    try {
+        const getParticipan = await Conversation.findOne({
+            where: {
+                id: id
+            },
+            attributes: ['senderId', 'reciverId']
+        })
+        let participanId
+        if (getParticipan.senderId === req.id) {
+            participanId = getParticipan.reciverId
+        } else if (getParticipan.reciverId === req.id) {
+            participanId = getParticipan.senderId
+        }
+        console.log(participanId);
+        const participan = await Users.findOne({
+            where: {
+                id: participanId
+            }, attributes: ['id', 'username', 'avatar']
+
+        })
+        return res.status(200).json(participan)
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json(error)
+    }
+}
