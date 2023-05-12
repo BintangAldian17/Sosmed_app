@@ -2,20 +2,33 @@ import Users from "../../models/UsersModel.js";
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import dotenv from "dotenv"
+import { Op } from "sequelize"
 
 dotenv.config({ path: "./.env" })
 
 
-export const getAllUser = async (req, res) => {
-    try {
-        const users = await Users.findAll({
-            attributes: ["id", "username", "email"]
-        })
-        res.json(users)
-    } catch (error) {
-        res.status(400).json(error)
-    }
+export const findUser = async (req, res) => {
+    const limit = parseInt(req.query.limit) || 10
+    const search = req.query.search || ""
+    const totalRows = await Users.count({
+        where: {
+            username: { [Op.like]: `%${search}%` }
+        }
+    })
+    const results = await Users.findAll({
+        where: {
+            username: { [Op.like]: `%${search}%` }
+        },
+        attributes: ['id', 'username', 'avatar'],
+        limit: limit,
+    })
+    res.json({
+        results: results,
+        limit: limit,
+        totalRows: totalRows
+    })
 }
+
 
 
 export const Register = async (req, res) => {
@@ -46,29 +59,56 @@ export const Register = async (req, res) => {
     }
 }
 
+// export const Login = async (req, res) => {
+//     try {
+//         const user = await Users.findOne({
+//             where: {
+//                 username: req.body.username
+//             }
+//         });
+//         const match = await bcrypt.compare(req.body.password, user.password)
+//         if (!match) return res.status(400).json({ msg: "wrong password" })
+
+//         const userId = user.id
+//         const email = user.email
+//         const username = user.username
+
+//         const token = jwt.sign({ id: userId, username: username }, process.env.SECRET_KEY)
+
+//         res.cookie("accsessToken", token, {
+//             secure: true,
+//             sameSite: 'none',
+//             httpOnly: true
+//         }).status(200).json({ id: userId, username: username, email: email })
+//     } catch (error) {
+//         res.status(404).json({ msg: "Username not found" })
+//     }
+// }
+
 export const Login = async (req, res) => {
     try {
-        const user = await Users.findOne({
-            where: {
-                username: req.body.username
-            }
-        });
-        const match = await bcrypt.compare(req.body.password, user.password)
-        if (!match) return res.status(400).json({ msg: "wrong password" })
+        const { username, password } = req.body;
 
-        const userId = user.id
-        const email = user.email
-        const username = user.username
+        const user = await Users.findOne({ where: { username } });
 
-        const token = jwt.sign({ id: userId, username: username }, process.env.SECRET_KEY)
+        if (!user) {
+            return res.status(404).json({ msg: 'Username not found' });
+        }
 
-        res.cookie("accsessToken", token, {
-            secure: true,
-            sameSite: 'none',
-            httpOnly: true
-        }).status(200).json({ id: userId, username: username, email: email })
+        const match = await bcrypt.compare(password, user.password);
+
+        if (!match) {
+            return res.status(400).json({ msg: 'Wrong password' });
+        }
+
+        const token = jwt.sign({ id: user.id, username: user.username }, process.env.SECRET_KEY);
+
+        res.cookie('accsessToken', token, {
+            // httpOnly: true, sameSite: "none",
+            // secure: true,
+        }).status(200).json({ id: user.id, username: user.username, email: user.email, avatar: user.avatar });
     } catch (error) {
-        res.status(404).json({ msg: "Username not found" })
+        res.status(500).json({ msg: 'Server Error' });
     }
 }
 

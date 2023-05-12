@@ -1,49 +1,123 @@
-import { Fragment, useState } from "react";
-import { AiFillHeart } from "react-icons/ai";
+import { Fragment, useContext, useRef, useState } from "react";
+import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { BiCommentDetail } from "react-icons/bi";
-import { BsFillBookmarkFill, BsThreeDots, BsThreeDotsVertical } from "react-icons/bs";
-import image from "../assets/Dummy.jpg";
+import { BsFillBookmarkFill, BsThreeDots, BsThreeDotsVertical, BsEmojiSmile } from "react-icons/bs";
+import userPic from "../assets/user.png";
 import { Dialog, Popover, Transition } from "@headlessui/react";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import placeholderLoading from "../assets/placeholder_loading.png";
+import "react-lazy-load-image-component/src/effects/blur.css";
+import { useGetComments, useGetDetailPost } from "../hooks/posts/GetDetailPost";
+import { useForm } from "react-hook-form";
+import { useAddComment } from "../hooks/comments/AddComments";
+import { useQueryClient } from "@tanstack/react-query";
+import { GetMomment } from "../utils/GetMomment";
+import moment from "moment";
+import { useGetLikesPost } from "../hooks/posts/GetPosts";
+import { AuthContext } from "../context-provider/AuthContextProvider";
+import { useLikePost } from "../hooks/likePosts/likePost";
+import { useUnlikePost } from "../hooks/likePosts/unlikePost";
+import DetailPost from "./DetailPost";
 
-const Posts = ({ i, e }) => {
-  const [isOpen, setIsOpen] = useState(false);
+const Posts = ({ postImage, id, userInfo, i, likes, totalComments }) => {
+  const [modalOption, setModalOption] = useState(false);
+  const [modalDetailPost, setModalDetailPost] = useState(false);
+  const [detailPostId, setDetailPostId] = useState(Number);
+  const [currentUser] = useContext(AuthContext);
 
-  const closeModal = () => {
-    setIsOpen(false);
+  const queryClient = useQueryClient();
+
+  const { mutate: likePost } = useLikePost({
+    onSuccess: () => {
+      queryClient.invalidateQueries("posts");
+    },
+  });
+
+  const { mutate: unLikePost } = useUnlikePost({
+    onSuccess: () => {
+      queryClient.invalidateQueries("posts");
+    },
+  });
+
+  const closeOptionModal = () => {
+    setModalOption(false);
   };
 
-  const openModal = () => {
-    setIsOpen(true);
+  const openOptionModal = () => {
+    setModalOption(true);
+  };
+
+  const closeModalDetailPost = () => {
+    setModalDetailPost(false);
+    reset({
+      commentbody: "",
+    });
+  };
+
+  const openModalDetailPost = () => {
+    setDetailPostId(id);
+    setModalDetailPost(true);
+  };
+
+  const handleLikePost = () => {
+    const checkLikes = likes.includes(currentUser.id);
+    if (checkLikes) return unLikePost(id);
+    return likePost({ postId: id });
   };
   return (
     <div
       className={` w-full break-inside-avoid flex flex-col gap-y-2 ${
         i % 3 === 0 ? " md:aspect-square" : i % 2 === 0 ? " md:h-[320px] " : " md:h-[400px]"
-      } h-[400px] bg-[#2e2f3a] px-2 rounded-2xl py-3 mb-7 lg:flex-col-reverse`}
+      } h-[400px] bg-[#333333] px-2 rounded-2xl py-3 mb-7 lg:flex-col-reverse`}
       key={i}>
+      {/* Post Large screen */}
       <div className=" w-full flex justify-between items-center pl-[2px]">
         <div className=" flex items-center gap-x-2">
           <div className=" w-7 h-7 rounded-full">
-            <img src={image} className=" w-full h-full object-cover rounded-full" />
+            <img
+              src={`../../publict/upload/${userInfo?.avatar}`}
+              className=" w-full h-full object-cover rounded-full"
+            />
           </div>
-          <span className=" text-[12px] font-medium">BintangAldian17_</span>
+          <span className=" text-[13px] font-medium">{userInfo.username}</span>
         </div>
         <div className=" lg:hidden block">
           <BsThreeDots />
         </div>
         <div className=" lg:flex items-center gap-x-4 hidden">
           <div className=" flex items-center gap-x-1 justify-center">
-            <AiFillHeart className=" w-6 h-6 text-red-600" />
-            <span className=" text-sm font-medium">1.2654</span>
+            {likes?.includes(currentUser.id) ? (
+              <button className=" w-6 h-6" onClick={handleLikePost}>
+                <AiFillHeart className=" w-full h-full text-red-600" />
+              </button>
+            ) : (
+              <button className=" w-6 h-6" onClick={handleLikePost}>
+                <AiOutlineHeart className=" w-full h-full" />
+              </button>
+            )}
+            <span className=" text-sm font-medium">{likes.length}</span>
           </div>
           <div className=" flex items-center gap-x-1 ">
-            <BiCommentDetail className=" w-5 h-5" />
-            <span className=" text-sm font-medium place-items-start">22</span>
-            <button onClick={openModal}>
+            {/* Button Post Detail */}
+            <button className=" w-5 h-5" onClick={openModalDetailPost}>
+              <BiCommentDetail className=" w-full h-full" />
+            </button>
+            {/* Post Detail */}
+            <DetailPost
+              modalDetailPost={modalDetailPost}
+              closeModalDetailPost={closeModalDetailPost}
+              detailPostId={detailPostId}
+              handleLikePost={handleLikePost}
+              likes={likes}
+              currentUser={currentUser}
+              id={id}
+            />
+            <span className=" text-sm font-medium place-items-start">{totalComments.length}</span>
+            <button onClick={openOptionModal}>
               <BsThreeDotsVertical />
             </button>
-            <Transition appear show={isOpen} as={Fragment}>
-              <Dialog as="div" className="relative z-10" onClose={closeModal}>
+            <Transition appear show={modalOption} as={Fragment}>
+              <Dialog as="div" className="relative z-10" onClose={closeOptionModal}>
                 <Transition.Child
                   as={Fragment}
                   enter="ease-out duration-300"
@@ -80,7 +154,7 @@ const Posts = ({ i, e }) => {
                           <button
                             type="button"
                             className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                            onClick={closeModal}>
+                            onClick={closeOptionModal}>
                             Got it, thanks!
                           </button>
                         </div>
@@ -93,9 +167,10 @@ const Posts = ({ i, e }) => {
           </div>
         </div>
       </div>
-      <div className=" w-full h-full  overflow-hidden">
-        <img src={e} className=" w-full h-full object-cover rounded-lg" />
+      <div className=" w-full h-full  overflow-hidden ">
+        <img src={`../../publict/upload/${postImage}`} className=" w-full h-full object-cover rounded-lg" />
       </div>
+      {/* Posts Mobile Layout*/}
       <div className=" w-full flex justify-between items-center px-1 lg:hidden">
         <div className=" flex items-center gap-x-4">
           <div className=" flex items-center gap-x-1 justify-center">
@@ -104,7 +179,7 @@ const Posts = ({ i, e }) => {
           </div>
           <div className=" flex items-center gap-x-1 ">
             <BiCommentDetail className=" w-5 h-5" />
-            <span className=" text-sm font-medium place-items-start">22</span>
+            <span className=" text-sm font-medium place-items-start">{totalComments.length}</span>
           </div>
         </div>
         <BsFillBookmarkFill />

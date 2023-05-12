@@ -1,14 +1,13 @@
-import Feed from "./components/Feed";
-import Sidebar from "./components/Sidebar";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
+import { useContext, useEffect, useRef } from "react";
+import { AuthContext } from "./context-provider/AuthContextProvider";
 import Routes from "./routes/Routes";
+import io from "socket.io-client";
 
 function App() {
   return (
     <div
       className=" w-full
-    h-screen bg-[#1a1b21] lg:flex text-slate-200">
+    h-screen bg-[#272727] lg:flex text-slate-200">
       <Routes />
     </div>
   );

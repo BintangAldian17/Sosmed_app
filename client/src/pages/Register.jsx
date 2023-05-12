@@ -19,8 +19,6 @@ const Register = () => {
   const { register, control, handleSubmit, formState } = form;
   const { errors } = formState;
 
-  console.log(errors);
-
   const navigate = useNavigate();
   const { isError, error, mutate, isLoading } = useRegister({ onSuccess: () => navigate("/login") });
 
@@ -32,7 +30,6 @@ const Register = () => {
     // e.preventDefault();
     // mutate(register);
     mutate(data);
-    console.log("Form Submit", data);
   };
 
   count++;

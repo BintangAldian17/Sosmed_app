@@ -1,11 +1,11 @@
-import Feed from "../components/Feed";
+import { Outlet } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 
 const Layout = () => {
   return (
     <>
       <Sidebar />
-      <Feed />
+      <Outlet />
     </>
   );
 };

@@ -3,6 +3,8 @@ import db from "./config/Database.js";
 import router from "./routes/index.js";
 import cors from "cors"
 import cookieParser from "cookie-parser";
+import Conversation from "./models/Conversation.js"
+import Chat from "./models/ChatModel.js";
 
 const app = express()
 

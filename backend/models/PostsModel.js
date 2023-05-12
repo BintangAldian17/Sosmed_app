@@ -11,6 +11,7 @@ const Posts = db.define('posts', {
         allowNull: false
     },
     img: {
+        allowNull: false,
         type: DataTypes.STRING
     }
 })
