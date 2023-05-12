@@ -10,13 +10,14 @@ const Inbox = ({
   username,
   avatar,
   i,
-  userId,
+
   conversationId,
   handleCurrentChat,
   currentChat,
   refetch,
   message,
   createdAt,
+  read,
 }) => {
   const { data: lastChat } = useGetLastChat({ conversationId: conversationId });
   const [currentUser] = useContext(AuthContext);
@@ -31,6 +32,7 @@ const Inbox = ({
       onClick={() => {
         handleCurrentChat(conversationId);
         refetch({ conversationId: conversationId });
+        setUnRead(false);
       }}>
       <div className=" w-14 h-14 rounded-full overflow-hidden">
         <img alt="pic_user" src={`../../publict/upload/${avatar}`} className=" w-full h-full" />
@@ -38,7 +40,7 @@ const Inbox = ({
       <div className=" flex flex-col flex-grow max-w-full justify-center">
         <h1 className=" font-semibold text-lg">{username}</h1>
         <div className=" flex gap-x-1 items-center">
-          <p className=" text-gray-500 text-sm">{message}</p>
+          <p className={` text-gray-500 text-sm ${read === true ? "font-bold" : ""}`}>{message}</p>
           <div className=" text-gray-500 ">.{GetMomment(createdAt)}</div>
         </div>
       </div>

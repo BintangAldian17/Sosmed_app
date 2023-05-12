@@ -11,14 +11,17 @@ import { HiOutlineVideoCamera } from "react-icons/hi";
 import { useForm } from "react-hook-form";
 import { useSendMessage } from "../hooks/Chats/useSendMessage";
 import { useQueryClient } from "@tanstack/react-query";
+import { DateNow } from "../utils/DateNow";
 
 const DirectLayout = () => {
   const [currentUser] = useContext(AuthContext);
   const { socket } = useContext(ChatContext);
   const [lastMessage, setLastMessage] = useState(null);
   const [arrivalMessage, setArrivalMessage] = useState([]);
+  const [unRead, setUnRead] = useState(false);
   const [currentChat, setCurrentChat] = useState(null);
   const [newMessage, setNewMessage] = useState("");
+  const queryClient = useQueryClient();
 
   const { data: chatInbox, isLoading: isLoadingChatInbox } = useGetInbox({ currentUserId: currentUser?.id });
   const {
@@ -33,22 +36,68 @@ const DirectLayout = () => {
   };
 
   useEffect(() => {
-    if (detailChat) {
-      setArrivalMessage(detailChat);
-    }
-  }, [detailChat]);
-
-  useEffect(() => {
     if (socket === null) return;
     socket?.on("getMessage", (res) => {
-      if (res.conversationId !== currentChat) return;
-      setArrivalMessage([...arrivalMessage, res]);
-      setLastMessage(res.message);
+      if (res.conversationId !== currentChat) {
+        queryClient.setQueryData(["message-inbox", currentUser.id], (oldData) => {
+          if (!oldData) return null;
+          const newData = oldData.map((user) => {
+            if (user.conversation.conversationId === res.conversationId) {
+              const newConversation = {
+                ...user.conversation,
+                message: res.message,
+                createdAt: DateNow(),
+              };
+              return {
+                ...user,
+                conversation: newConversation,
+                unRead: true,
+              };
+            }
+            return user;
+          });
+          const fromat = newData.sort(
+            (a, b) => new Date(b.conversation.createdAt) - new Date(a.conversation.createdAt)
+          );
+          console.log(newData);
+          return fromat;
+        });
+        // setUnRead(true);
+      }
+      if (res.conversationId === currentChat) {
+        queryClient.setQueryData(["detail-chat", currentChat], (oldData) => {
+          if (!oldData) {
+            return [res];
+          }
+
+          return [...oldData, res];
+        });
+        queryClient.setQueryData(["message-inbox", currentUser.id], (oldData) => {
+          if (!oldData) return null;
+          const newData = oldData.map((user) => {
+            if (user.conversation.conversationId === res.conversationId) {
+              const newConversation = {
+                ...user.conversation,
+                message: res.message,
+                createdAt: DateNow(),
+              };
+              return {
+                ...user,
+                conversation: newConversation,
+                unRead: true,
+              };
+            }
+            return user;
+          });
+          return newData;
+        });
+        // setUnRead(false);
+      }
     });
     return () => {
       socket.off("getMessage");
     };
-  }, [socket, currentChat, arrivalMessage]);
+  }, [socket, currentChat, queryClient]);
 
   const form = useForm({
     defaultValues: {
@@ -58,7 +107,6 @@ const DirectLayout = () => {
 
   const { register, handleSubmit, formState, reset } = form;
 
-  const queryClient = useQueryClient();
   const { mutate: sendMessage } = useSendMessage({
     onSuccess: () => {
       queryClient.invalidateQueries("message-inbox");
@@ -88,8 +136,8 @@ const DirectLayout = () => {
 
   useEffect(() => {
     lastChatRef.current?.lastElementChild?.scrollIntoView();
-  }, [arrivalMessage]);
-  console.log(detailChat);
+  }, [detailChat]);
+  console.log(unRead);
 
   return (
     <div className="lg:w-[calc(100vw_-_350px)] max-w-full  h-screen ">
@@ -137,6 +185,7 @@ const DirectLayout = () => {
                     console.log(e.conversation.conversationId);
                     return (
                       <Inbox
+                        read={e.unRead}
                         currentUser={currentUser}
                         participan={participan}
                         refetch={refetch}
@@ -186,7 +235,7 @@ const DirectLayout = () => {
                 ) : (
                   <div className=" flex flex-col  w-full h-full justify-end lg:h-[calc(100vh_-_160px)] pb-7 pt-2 ">
                     <div className="w-full h-fit flex flex-col items-start px-4 overflow-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none'] gap-y-5">
-                      {arrivalMessage?.map((e, i) => {
+                      {detailChat?.map((e, i) => {
                         return (
                           <DetailChat
                             chatId={e.id}

@@ -23,7 +23,6 @@ const DetailChat = ({
   currentUser,
   lastChatRef,
 }) => {
-  console.log(message);
   // const [currentUser] = useContext(AuthContext);
   // const [arrivalMessage, setArrivalMessage] = useState([]);
   // const { socket, newMessage, setNewMessage, setLastMessage, lastMessage } = useContext(ChatContext);
@@ -52,7 +51,7 @@ const DetailChat = ({
 
   const { mutate: sendMessage } = useSendMessage({
     onSuccess: () => {
-      queryClient.invalidateQueries("last-chat");
+      queryClient.invalidateQueries("");
       queryClient.invalidateQueries("detail-chat");
       reset({
         message: "",

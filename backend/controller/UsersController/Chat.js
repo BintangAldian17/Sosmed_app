@@ -59,12 +59,7 @@ export const getConversation = async (req, res) => {
             }],
             order: [['createdAt', 'ASC']]
         })
-        const lastConversation = await Chat.findOne({
-            where: {
-                conversationId: id
-            },
-            order: [['createdAt', 'DESC']]
-        })
+
         return res.status(200).json(conversation)
     } catch (error) {
         console.log(error);
@@ -93,15 +88,14 @@ export const getAllConversation = async (req, res) => {
             },
             group: ['conversationId'],
             attributes: ['conversationId', [Sequelize.fn('max', Sequelize.col('createdAt')), 'createdAt'],
-                [
-                    Sequelize.literal(`(
-        SELECT message FROM Chats AS c2
-        WHERE c2.conversationId = Chat.conversationId
-        AND c2.createdAt = (
-          SELECT MAX(createdAt) FROM Chats AS c3
-          WHERE c3.conversationId = Chat.conversationId
-        )
-      )`),
+                [Sequelize.literal(`(
+                SELECT message FROM Chats AS c2
+                WHERE c2.conversationId = Chat.conversationId
+                AND c2.createdAt = (
+                SELECT MAX(createdAt) FROM Chats AS c3
+                WHERE c3.conversationId = Chat.conversationId
+                )
+                )`),
                     'message'
                 ]],
 
@@ -114,7 +108,8 @@ export const getAllConversation = async (req, res) => {
                 } : null
             }
         })
-        return res.status(200).json(results)
+        const sortResults = results.sort((a, b) => new Date(b.conversation.createdAt) - new Date(a.conversation.createdAt))
+        return res.status(200).json(sortResults)
     } catch (error) {
         console.log(error);
         return res.status(500).json(error)
