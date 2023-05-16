@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { AuthContext } from "../context-provider/AuthContextProvider";
 import Inbox from "./Inbox";
-import { Outlet } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { useGetChatParticipan, useGetDetailChat, useGetInbox } from "../hooks/Chats/useGetInbox";
 import { ChatContext } from "../context-provider/ChatContext";
 import OpenChat from "../pages/OpenChat";
@@ -15,13 +15,12 @@ import { DateNow } from "../utils/DateNow";
 
 const DirectLayout = () => {
   const [currentUser] = useContext(AuthContext);
-  const { socket } = useContext(ChatContext);
-  const [lastMessage, setLastMessage] = useState(null);
-  const [arrivalMessage, setArrivalMessage] = useState([]);
+  const { socket, notification, setNotification } = useContext(ChatContext);
   const [unRead, setUnRead] = useState(false);
   const [currentChat, setCurrentChat] = useState(null);
   const [newMessage, setNewMessage] = useState("");
   const queryClient = useQueryClient();
+  const location = useLocation();
 
   const { data: chatInbox, isLoading: isLoadingChatInbox } = useGetInbox({ currentUserId: currentUser?.id });
   const {
@@ -38,8 +37,9 @@ const DirectLayout = () => {
   useEffect(() => {
     if (socket === null) return;
     socket?.on("getMessage", (res) => {
-      if (res.conversationId !== currentChat) {
+      if (res.conversationId !== currentChat && location.pathname !== "/direct") {
         queryClient.setQueryData(["message-inbox", currentUser.id], (oldData) => {
+          console.log(oldData);
           if (!oldData) return null;
           const newData = oldData.map((user) => {
             if (user.conversation.conversationId === res.conversationId) {
@@ -69,7 +69,6 @@ const DirectLayout = () => {
           if (!oldData) {
             return [res];
           }
-
           return [...oldData, res];
         });
         queryClient.setQueryData(["message-inbox", currentUser.id], (oldData) => {
@@ -93,11 +92,12 @@ const DirectLayout = () => {
         });
         // setUnRead(false);
       }
+      if (location.pathname !== "/direct") return setNotification([res]);
     });
     return () => {
       socket.off("getMessage");
     };
-  }, [socket, currentChat, queryClient]);
+  }, [socket, currentChat, queryClient, notification]);
 
   const form = useForm({
     defaultValues: {

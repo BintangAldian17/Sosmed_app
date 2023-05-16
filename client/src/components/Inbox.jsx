@@ -10,7 +10,6 @@ const Inbox = ({
   username,
   avatar,
   i,
-
   conversationId,
   handleCurrentChat,
   currentChat,

@@ -8,12 +8,16 @@ import { useGetPosts } from "../hooks/posts/GetPosts";
 import { BsFillPlayFill } from "react-icons/bs";
 import avatarUser from "../assets/user.png";
 import Posts from "../components/Posts";
+import { ChatContext } from "../context-provider/ChatContext";
 const Feed = () => {
+  const { notification } = useContext(ChatContext);
   const [currentUser] = useContext(AuthContext);
   const [data, setData] = useState([]);
   const [posts, setPosts] = useState([]);
 
   const { data: post, isLoading, isError } = useGetPosts();
+
+  console.log(notification);
 
   useEffect(() => {
     const loadData = generateFakeUsers(20);

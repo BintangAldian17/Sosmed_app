@@ -27,7 +27,7 @@ router.delete("/posts/:postId/comments/:commentId", verifyToken, deleteComment)
 
 // API for reply comment on posts
 router.get("/posts/:postId/comment/:commentId", getAllReplyComments)
-router.post("/posts/:postId/comment/:commentId", sentReplyComment)
+router.post("/reply", verifyToken, sentReplyComment)
 
 
 // API Users

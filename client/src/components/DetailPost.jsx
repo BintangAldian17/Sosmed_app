@@ -1,7 +1,8 @@
 import { Dialog, Transition } from "@headlessui/react";
-import { React, Fragment, useState } from "react";
+import { React, Fragment, useState, useRef } from "react";
 import { BsEmojiSmile, BsFillBookmarkFill, BsThreeDots } from "react-icons/bs";
 import { GetMomment } from "../utils/GetMomment";
+import { TiArrowBack } from "react-icons/ti";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { BiCommentDetail } from "react-icons/bi";
 import { useQueryClient } from "@tanstack/react-query";
@@ -11,16 +12,18 @@ import { useForm } from "react-hook-form";
 import { useGetComments, useGetDetailPost } from "../hooks/posts/GetDetailPost";
 import userPic from "../assets/user.png";
 import EmojiPicker, { Emoji, EmojiStyle } from "emoji-picker-react";
+import { Comment } from "./Comment";
+import { usePostReplyComment } from "../hooks/reply-comment/useGetReplyComment";
 
 const DetailPost = ({ likes, currentUser, modalDetailPost, closeModalDetailPost, detailPostId, handleLikePost }) => {
   const [selectedEmoji, setSelectedEmoji] = useState("");
   const [showEmoji, setShowEmoji] = useState(false);
+  const [commentId, setCommentId] = useState(null);
+  console.log(commentId);
 
-  const form = useForm({
-    defaultValues: {
-      commentbody: "",
-    },
-  });
+  const ref = useRef(null);
+
+  const form = useForm();
 
   const { register, handleSubmit, formState, reset } = form;
 
@@ -30,7 +33,7 @@ const DetailPost = ({ likes, currentUser, modalDetailPost, closeModalDetailPost,
 
   const queryClient = useQueryClient();
 
-  const { mutate } = useAddComment({
+  const { mutate: postComment } = useAddComment({
     onSuccess: () => {
       queryClient.invalidateQueries("comments");
       queryClient.invalidateQueries("posts");
@@ -40,8 +43,20 @@ const DetailPost = ({ likes, currentUser, modalDetailPost, closeModalDetailPost,
     },
   });
 
+  const { mutate: postReplyComment } = usePostReplyComment({
+    onSuccess: () => {
+      queryClient.invalidateQueries("reply-comment");
+      queryClient.invalidateQueries("comments");
+      reset({
+        replyBody: "",
+      });
+    },
+  });
+
   const handleAddComment = (data) => {
-    mutate({ ...data, postId: detailPostId });
+    console.log(data);
+    if (commentId === null) return postComment({ ...data, postId: detailPostId });
+    return postReplyComment({ ...data, postId: detailPostId, commentId: commentId });
   };
 
   return (
@@ -124,25 +139,17 @@ const DetailPost = ({ likes, currentUser, modalDetailPost, closeModalDetailPost,
                             ? null
                             : comments?.results?.map((el, i) => {
                                 return (
-                                  <div className=" flex gap-x-4 items-start w-full h-fit" key={i}>
-                                    <div className=" w-8 h-8 rounded-full overflow-hidden">
-                                      <img
-                                        src={`../../publict/upload/${el?.user?.avatar}`}
-                                        alt="avatar-user"
-                                        className=" w-full h-full object-cover"
-                                      />
-                                    </div>
-                                    <div className=" flex flex-grow flex-col gap-y-2 h-fit">
-                                      <span className=" text-sm font-bold">
-                                        {el?.user?.username}{" "}
-                                        <span className=" text-slate-300 font-normal text-base">{el?.commentbody}</span>
-                                      </span>
-                                      <div className=" flex gap-x-3 text-xs">
-                                        <span>{GetMomment(el?.createdAt)}</span>
-                                        <button className="">reply</button>
-                                      </div>
-                                    </div>
-                                  </div>
+                                  <Comment
+                                    id={el?.id}
+                                    avatar={el?.user?.avatar}
+                                    username={el?.user?.username}
+                                    createdAt={el?.createdAt}
+                                    text={el?.commentbody}
+                                    i={i}
+                                    userId={el?.user?.id}
+                                    detailPostId={detailPostId}
+                                    setCommentId={setCommentId}
+                                  />
                                 );
                               })}{" "}
                         </div>
@@ -189,19 +196,37 @@ const DetailPost = ({ likes, currentUser, modalDetailPost, closeModalDetailPost,
                             <button className=" w-6 h-6 ">
                               <BsEmojiSmile className=" w-full h-full" />
                             </button>
-
+                            {commentId ? (
+                              <button onClick={() => setCommentId(null)}>
+                                <TiArrowBack />
+                              </button>
+                            ) : null}
                             {/* Add Comment */}
                             <form className=" w-full flex gap-x-2" onSubmit={handleSubmit(handleAddComment)}>
-                              <input
-                                type="text"
-                                className=" w-full px-2 bg-transparent outline-none placeholder:text-sm"
-                                placeholder="Add Comments..."
-                                {...register("commentbody", {
-                                  required: true,
-                                })}
-                                autoComplete="off"
-                                // ref={ref}
-                              />
+                              {commentId !== null ? (
+                                <input
+                                  type="text"
+                                  className=" w-full px-2 bg-transparent outline-none placeholder:text-sm"
+                                  placeholder="Reply Comment..."
+                                  {...register("replyBody", {
+                                    required: true,
+                                  })}
+                                  autoComplete="off"
+                                  // ref={ref}
+                                />
+                              ) : (
+                                <input
+                                  type="text"
+                                  className=" w-full px-2 bg-transparent outline-none placeholder:text-sm"
+                                  placeholder="Add Comment..."
+                                  {...register("commentbody", {
+                                    required: true,
+                                  })}
+                                  autoComplete="off"
+                                  // ref={ref}
+                                />
+                              )}
+
                               <button
                                 className={` text-base disabled:text-red-300 text-red-500
                                        `}
