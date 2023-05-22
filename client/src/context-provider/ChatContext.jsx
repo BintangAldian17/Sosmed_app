@@ -13,7 +13,7 @@ export const ChatContextProvider = ({ children }) => {
   const [notification, setNotification] = useState([]);
 
   useEffect(() => {
-    const newSocket = io("http://localhost:5000");
+    const newSocket = io("https://sosmedapp-production.up.railway.app");
     setSocket(newSocket);
 
     return () => {
