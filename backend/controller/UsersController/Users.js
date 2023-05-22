@@ -81,7 +81,8 @@ export const Login = async (req, res) => {
         res.cookie('accsessToken', token, {
             secure: true,
             httpOnly: true,
-            sameSite: 'lax',
+            sameSite: 'none',
+            domain: "http://localhost:3000",
             maxAge: 2 * 24 * 60 * 60 * 1000
         }).status(200).json({ id: user.id, username: user.username, email: user.email, avatar: user.avatar });
     } catch (error) {
