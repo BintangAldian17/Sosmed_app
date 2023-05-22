@@ -10,7 +10,7 @@ import Users from "./models/UsersModel.js";
 const app = express()
 
 try {
-    Users.sync()
+    db.sync()
     await db.authenticate()
     console.log("Database Connected");
 } catch (error) {
