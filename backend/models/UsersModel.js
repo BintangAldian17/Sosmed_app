@@ -19,8 +19,9 @@ const Users = db.define('users', {
     },
     avatar: {
         type: DataTypes.STRING,
-        allowNull: true
-    }
+        defaultValue: 'user.png',
+        allowNull: false
+    },
 }, {
     freezeTableName: true
 })
