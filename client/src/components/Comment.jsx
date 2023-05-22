@@ -5,20 +5,20 @@ import { AuthContext } from "../context-provider/AuthContextProvider";
 
 export const Comment = ({ avatar, username, createdAt, text, i, detailPostId, id, setCommentId, userId }) => {
   const [currentUser] = useContext(AuthContext);
-  console.log(currentUser.id, userId);
   const { data: replyComment } = useGetReplyComment({ postId: detailPostId, commentId: id });
-  console.log(replyComment);
   return (
     <div className=" flex gap-x-4 items-start w-full h-fit" key={i}>
       <div className=" w-8 h-8 rounded-full overflow-hidden">
         <img src={`../../publict/upload/${avatar}`} alt="avatar-user" className=" w-full h-full object-cover" />
       </div>
-      <div className=" flex flex-grow flex-col gap-y-2 h-fit">
+      <div className=" flex flex-grow flex-col md:gap-y-2 gap-y-1 h-fit">
         <span className=" text-sm font-bold">
-          {username} <span className=" text-slate-300 font-normal text-base">{text}</span>
+          {username} <span className=" text-slate-300 font-normal text-base md:contents hidden">{text}</span>
+          <span className=" font-normal md:hidden">{GetMomment(createdAt)}</span>
         </span>
-        <div className=" flex gap-x-3 text-xs">
-          <span>{GetMomment(createdAt)}</span>
+        <div className=" flex md:flex-row flex-col md:gap-x-3 gap-y-1 md:gap-y-0 text-xs items-start">
+          <span className=" text-slate-300 font-semibold text-base  md:hidden">{text}</span>
+          <span className=" md:inline-block hidden">{GetMomment(createdAt)}</span>
           {currentUser?.id !== userId ? (
             <button className="" onClick={() => setCommentId(id)}>
               reply

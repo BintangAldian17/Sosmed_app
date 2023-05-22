@@ -30,7 +30,7 @@ const Navbar = () => {
       const res = await publicClient.post("/posts/upload", fromData);
       return res.data;
     } catch (error) {
-      console.log(error);
+      console.log(error); 
     }
   };
 

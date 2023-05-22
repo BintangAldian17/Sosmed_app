@@ -39,7 +39,6 @@ const DirectLayout = () => {
     socket?.on("getMessage", (res) => {
       if (res.conversationId !== currentChat && location.pathname !== "/direct") {
         queryClient.setQueryData(["message-inbox", currentUser.id], (oldData) => {
-          console.log(oldData);
           if (!oldData) return null;
           const newData = oldData.map((user) => {
             if (user.conversation.conversationId === res.conversationId) {
@@ -59,10 +58,8 @@ const DirectLayout = () => {
           const fromat = newData.sort(
             (a, b) => new Date(b.conversation.createdAt) - new Date(a.conversation.createdAt)
           );
-          console.log(newData);
           return fromat;
         });
-        // setUnRead(true);
       }
       if (res.conversationId === currentChat) {
         queryClient.setQueryData(["detail-chat", currentChat], (oldData) => {
@@ -137,7 +134,6 @@ const DirectLayout = () => {
   useEffect(() => {
     lastChatRef.current?.lastElementChild?.scrollIntoView();
   }, [detailChat]);
-  console.log(unRead);
 
   return (
     <div className="lg:w-[calc(100vw_-_350px)] max-w-full  h-screen ">

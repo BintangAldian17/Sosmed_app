@@ -2,18 +2,9 @@ import { Fragment, useContext, useRef, useState } from "react";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { BiCommentDetail } from "react-icons/bi";
 import { BsFillBookmarkFill, BsThreeDots, BsThreeDotsVertical, BsEmojiSmile } from "react-icons/bs";
-import userPic from "../assets/user.png";
+
 import { Dialog, Popover, Transition } from "@headlessui/react";
-import { LazyLoadImage } from "react-lazy-load-image-component";
-import placeholderLoading from "../assets/placeholder_loading.png";
-import "react-lazy-load-image-component/src/effects/blur.css";
-import { useGetComments, useGetDetailPost } from "../hooks/posts/GetDetailPost";
-import { useForm } from "react-hook-form";
-import { useAddComment } from "../hooks/comments/AddComments";
 import { useQueryClient } from "@tanstack/react-query";
-import { GetMomment } from "../utils/GetMomment";
-import moment from "moment";
-import { useGetLikesPost } from "../hooks/posts/GetPosts";
 import { AuthContext } from "../context-provider/AuthContextProvider";
 import { useLikePost } from "../hooks/likePosts/likePost";
 import { useUnlikePost } from "../hooks/likePosts/unlikePost";
@@ -174,11 +165,31 @@ const Posts = ({ postImage, id, userInfo, i, likes, totalComments }) => {
       <div className=" w-full flex justify-between items-center px-1 lg:hidden">
         <div className=" flex items-center gap-x-4">
           <div className=" flex items-center gap-x-1 justify-center">
-            <AiFillHeart className=" w-6 h-6 text-red-600" />
-            <span className=" text-sm font-medium">1.2654</span>
+            {likes?.includes(currentUser.id) ? (
+              <button className=" w-6 h-6" onClick={handleLikePost}>
+                <AiFillHeart className=" w-full h-full text-red-600" />
+              </button>
+            ) : (
+              <button className=" w-6 h-6" onClick={handleLikePost}>
+                <AiOutlineHeart className=" w-full h-full" />
+              </button>
+            )}
+            <span className=" text-sm font-medium">{likes.length}</span>
           </div>
           <div className=" flex items-center gap-x-1 ">
-            <BiCommentDetail className=" w-5 h-5" />
+            <button className=" w-5 h-5" onClick={openModalDetailPost}>
+              <BiCommentDetail className=" w-full h-full" />
+            </button>
+            {/* Post Detail */}
+            <DetailPost
+              modalDetailPost={modalDetailPost}
+              closeModalDetailPost={closeModalDetailPost}
+              detailPostId={detailPostId}
+              handleLikePost={handleLikePost}
+              likes={likes}
+              currentUser={currentUser}
+              id={id}
+            />
             <span className=" text-sm font-medium place-items-start">{totalComments.length}</span>
           </div>
         </div>
