@@ -4,13 +4,12 @@ import router from "./routes/index.js";
 import cors from "cors"
 import cookieParser from "cookie-parser";
 import { Server } from "socket.io"
-import Users from "./models/UsersModel.js";
 
 
 const app = express()
 
 try {
-    db.sync()
+    db.drop()
     await db.authenticate()
     console.log("Database Connected");
 } catch (error) {
