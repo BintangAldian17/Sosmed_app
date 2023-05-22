@@ -16,6 +16,8 @@ try {
     console.error(error);
 }
 
+const port = process.env.PORT || 5000
+
 app.use(cors({
     credentials: true,
     origin: ['http://0.0.0.0:3000', 'http://127.0.0.1:3000', 'http://localhost:3000']
@@ -24,7 +26,7 @@ app.use(cookieParser())
 app.use(express.json())
 app.use(router)
 
-const server = app.listen(5000, () => {
+const server = app.listen(port, () => {
     console.log("Server running on port 5000");
 })
 
