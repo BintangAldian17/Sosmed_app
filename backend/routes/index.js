@@ -21,7 +21,7 @@ router.post('/posts/upload', upload.single('file'), (req, res) => {
 })
 
 router.get("/hello-world", (req, res) => {
-    res.json("Hello world test!")
+    res.send("Hello world test!")
 })
 
 // API for comment on posts
