@@ -82,7 +82,7 @@ export const Login = async (req, res) => {
             secure: true,
             httpOnly: true,
             sameSite: 'none',
-            domain: "https://sosmed-app-2wy1-pr8h4qc0l-bintangaldian17.vercel.app",
+            domain: "https://sosmed-app-2wy1-2n55579j4-bintangaldian17.vercel.app",
             maxAge: 2 * 24 * 60 * 60 * 1000
         }).status(200).json({ id: user.id, username: user.username, email: user.email, avatar: user.avatar });
     } catch (error) {

@@ -19,7 +19,7 @@ const port = process.env.PORT || 5000
 
 app.use(cors({
     credentials: true,
-    origin: ['http://0.0.0.0:3000', 'https://sosmed-app-2wy1-pr8h4qc0l-bintangaldian17.vercel.app', 'http://localhost:3000']
+    origin: ['http://0.0.0.0:3000', 'https://sosmed-app-2wy1-2n55579j4-bintangaldian17.vercel.app', 'http://localhost:3000']
 }))
 app.use(cookieParser())
 app.use(express.json())
@@ -32,7 +32,7 @@ const server = app.listen(port, () => {
 // Socket config
 
 const io = new Server(server, {
-    cors: ['http://localhost:3000', 'https://sosmed-app-2wy1-pr8h4qc0l-bintangaldian17.vercel.app']
+    cors: ['http://localhost:3000', 'https://sosmed-app-2wy1-2n55579j4-bintangaldian17.vercel.app']
 })
 
 let onlineUsers = []
