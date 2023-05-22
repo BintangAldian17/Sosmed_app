@@ -59,31 +59,6 @@ export const Register = async (req, res) => {
     }
 }
 
-// export const Login = async (req, res) => {
-//     try {
-//         const user = await Users.findOne({
-//             where: {
-//                 username: req.body.username
-//             }
-//         });
-//         const match = await bcrypt.compare(req.body.password, user.password)
-//         if (!match) return res.status(400).json({ msg: "wrong password" })
-
-//         const userId = user.id
-//         const email = user.email
-//         const username = user.username
-
-//         const token = jwt.sign({ id: userId, username: username }, process.env.SECRET_KEY)
-
-//         res.cookie("accsessToken", token, {
-//             secure: true,
-//             sameSite: 'none',
-//             httpOnly: true
-//         }).status(200).json({ id: userId, username: username, email: email })
-//     } catch (error) {
-//         res.status(404).json({ msg: "Username not found" })
-//     }
-// }
 
 export const Login = async (req, res) => {
     try {
@@ -104,8 +79,9 @@ export const Login = async (req, res) => {
         const token = jwt.sign({ id: user.id, username: user.username }, process.env.SECRET_KEY);
 
         res.cookie('accsessToken', token, {
+            secure: true,
             httpOnly: true,
-            sameSite: "none",
+            sameSite: 'lax',
             maxAge: 2 * 24 * 60 * 60 * 1000
         }).status(200).json({ id: user.id, username: user.username, email: user.email, avatar: user.avatar });
     } catch (error) {
