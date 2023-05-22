@@ -104,8 +104,9 @@ export const Login = async (req, res) => {
         const token = jwt.sign({ id: user.id, username: user.username }, process.env.SECRET_KEY);
 
         res.cookie('accsessToken', token, {
-            // httpOnly: true, sameSite: "none",
-            // secure: true,
+            httpOnly: true,
+            sameSite: "none",
+            maxAge: 2 * 24 * 60 * 60 * 1000
         }).status(200).json({ id: user.id, username: user.username, email: user.email, avatar: user.avatar });
     } catch (error) {
         res.status(500).json({ msg: 'Server Error' });

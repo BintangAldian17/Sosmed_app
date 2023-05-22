@@ -19,7 +19,6 @@ const DetailPost = ({ likes, currentUser, modalDetailPost, closeModalDetailPost,
   const [selectedEmoji, setSelectedEmoji] = useState("");
   const [showEmoji, setShowEmoji] = useState(false);
   const [commentId, setCommentId] = useState(null);
-  console.log(commentId);
 
   const ref = useRef(null);
 
@@ -54,7 +53,6 @@ const DetailPost = ({ likes, currentUser, modalDetailPost, closeModalDetailPost,
   });
 
   const handleAddComment = (data) => {
-    console.log(data);
     if (commentId === null) return postComment({ ...data, postId: detailPostId });
     return postReplyComment({ ...data, postId: detailPostId, commentId: commentId });
   };
@@ -74,7 +72,7 @@ const DetailPost = ({ likes, currentUser, modalDetailPost, closeModalDetailPost,
         </Transition.Child>
 
         <div className="fixed inset-0 overflow-y-auto text-slate-300">
-          <div className="flex h-full items-center justify-center p-4 text-center">
+          <div className="flex h-full md:items-center items-end justify-center md:p-4 text-center">
             <Transition.Child
               as={Fragment}
               enter="ease-out duration-300"
@@ -83,17 +81,17 @@ const DetailPost = ({ likes, currentUser, modalDetailPost, closeModalDetailPost,
               leave="ease-in duration-200"
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95">
-              <Dialog.Panel className="w-full max-w-[70%] flex transform overflow-hidden rounded-sm text-left align-middle shadow-xl transition-all h-[90%] bg-[#272727]">
+              <Dialog.Panel className="w-full md:max-w-[70%] flex transform overflow-hidden rounded-sm text-left align-middle shadow-xl transition-all h-[90%] bg-[#272727]">
                 <div className=" w-full h-full flex ">
                   {/* Image Detail Post */}
-                  <div className=" w-[50%]">
+                  <div className=" md:flex hidden lg:w-[50%]">
                     {isLoadingDetailPost ? (
                       <div className=" w-full h-full bg-[#1f2127]"></div>
                     ) : (
                       <img src={`../../publict/upload/${detailPost?.img}`} className=" w-full h-full object-cover " />
                     )}
                   </div>
-                  <div className=" w-full max-w-[50%] ">
+                  <div className=" w-full md:max-w-[50%] ">
                     {/*  Post User */}
                     <div className=" w-full flex flex-col justify-between h-full">
                       <div className=" w-full flex flex-col">
@@ -112,16 +110,21 @@ const DetailPost = ({ likes, currentUser, modalDetailPost, closeModalDetailPost,
                                   className=" w-full h-full object-cover"
                                 />
                               </div>
-                              <span className=" text-[15px] font-bold">{detailPost?.user?.username}</span>
+                              <div className=" flex flex-col md:block">
+                                <span className=" text-[15px] font-bold">{detailPost?.user?.username}</span>
+                                <span className="text-slate-300 font-normal text-base md:hidden block">
+                                  {detailPost?.desc}
+                                </span>
+                              </div>
                             </div>
-                            <button className=" w-5 h-5">
+                            <button className=" w-5 h-5 md:block hidden">
                               <BsThreeDots className=" w-full h-full" />
                             </button>
                           </div>
                         )}
                         {/* Desc and Comment */}
-                        <div className=" w-full h-fit p-3 flex flex-col overflow-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none'] lg:h-[calc(100vh_-_319px)] gap-y-4 ">
-                          <div className=" flex gap-x-4 items-start h-fit w-full">
+                        <div className=" w-full  p-3 flex flex-col overflow-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none'] md:h-[calc(100vh_-_319px)] h-[calc(100vh_-_205px)] gap-y-4 ">
+                          <div className=" md:flex gap-x-4 items-start h-fit w-full hidden">
                             <div className=" w-8 h-8 rounded-full overflow-hidden">
                               <img
                                 src={`../../publict/upload/${detailPost?.user?.avatar}`}
@@ -130,8 +133,12 @@ const DetailPost = ({ likes, currentUser, modalDetailPost, closeModalDetailPost,
                               />
                             </div>
                             <div>
-                              <span className="text-sm font-bold">{detailPost?.user?.username}</span>{" "}
-                              <span className="text-slate-300 font-normal text-base">{detailPost?.desc}</span>
+                              <span className="text-sm font-bold">
+                                {detailPost?.user?.username}{" "}
+                                <span className="text-slate-300 font-normal text-base contents">
+                                  {detailPost?.desc}
+                                </span>
+                              </span>
                             </div>
                           </div>
                           {/* Comment section  */}
@@ -156,15 +163,15 @@ const DetailPost = ({ likes, currentUser, modalDetailPost, closeModalDetailPost,
                       </div>
                       {/* Detail Post Feture */}
                       {isLoadingDetailPost ? (
-                        <div className=" w-full h-52 flex border-t border-gray-700 flex-col gap-y-2 pt-9 pl-5 animate-pulse">
+                        <div className=" w-full h-52 md:flex border-t border-gray-700 md:flex-col gap-y-2 pt-9 pl-5 animate-pulse hidden">
                           <div className=" w-32 h-4 rounded  bg-gray-600"></div>
                           <div className=" w-52 h-4 rounded  bg-gray-600"></div>
                           <div className=" w-32 h-4 rounded  bg-gray-600"></div>
                         </div>
                       ) : (
                         <div className=" w-full flex-col h-fit border-t border-gray-700">
-                          <div className=" w-full flex flex-col px-4 py-2">
-                            <div className=" w-full flex justify-between items-center">
+                          <div className=" w-full md:flex md:flex-col hidden px-4 py-2">
+                            <div className=" w-full flex justify-between items-center   ">
                               <div className=" flex gap-x-3 items-center">
                                 <button className=" w-7 h-7">
                                   {likes?.includes(currentUser.id) ? (
