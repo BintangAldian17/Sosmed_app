@@ -20,6 +20,10 @@ router.post('/posts/upload', upload.single('file'), (req, res) => {
     res.status(200).json(file.filename)
 })
 
+router.get("/hello-world", (req, res) => {
+    res.json("Hello world test!")
+})
+
 // API for comment on posts
 router.get("/comments/:id", getCommentPost)
 router.post("/comment", verifyToken, postComment)
