@@ -79,10 +79,10 @@ export const Login = async (req, res) => {
         const token = jwt.sign({ id: user.id, username: user.username }, process.env.SECRET_KEY);
 
         res.cookie('accsessToken', token, {
-            secure: true,
+            // secure: true,
             httpOnly: true,
-            sameSite: 'none',
-            domain: "https://sosmed-app-client.vercel.app",
+            // sameSite: 'none',
+            // domain: "https://sosmed-app-client.vercel.app",
             maxAge: 2 * 24 * 60 * 60 * 1000
         }).status(200).json({ id: user.id, username: user.username, email: user.email, avatar: user.avatar });
     } catch (error) {
