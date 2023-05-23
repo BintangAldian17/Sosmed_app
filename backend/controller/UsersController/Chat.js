@@ -87,17 +87,17 @@ export const getAllConversation = async (req, res) => {
                 }
             },
             group: ['conversationId'],
-            attributes: ['conversationId', [Sequelize.fn('max', Sequelize.col('createdAt')), 'createdAt'],
-                [Sequelize.literal(`(
-                SELECT message FROM chats AS c2
-                WHERE c2.conversationId = chats.conversationId
-                AND c2.createdAt = (
-                SELECT MAX(createdAt) FROM chats AS c3
-                WHERE c3.conversationId = chats.conversationId
-                )
-                )`),
-                    'message'
-                ]],
+            // attributes: ['conversationId', [Sequelize.fn('max', Sequelize.col('createdAt')), 'createdAt'],
+            //     [Sequelize.literal(`(
+            //     SELECT message FROM chats AS c2
+            //     WHERE c2.conversationId = chats.conversationId
+            //     AND c2.createdAt = (
+            //     SELECT MAX(createdAt) FROM chats AS c3
+            //     WHERE c3.conversationId = chats.conversationId
+            //     )
+            //     )`),
+            //         'message'
+            //     ]],
 
         })
         const results = allConversation.map(user => {
