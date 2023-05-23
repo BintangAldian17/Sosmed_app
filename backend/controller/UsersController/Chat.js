@@ -108,7 +108,7 @@ export const getAllConversation = async (req, res) => {
         //         } : null
         //     }
         // })
-        const sortResults = results.sort((a, b) => new Date(b.conversation.createdAt) - new Date(a.conversation.createdAt))
+        // const sortResults = results.sort((a, b) => new Date(b.conversation.createdAt) - new Date(a.conversation.createdAt))
         return res.status(200).json(allConversation)
     } catch (error) {
         console.log(error);
