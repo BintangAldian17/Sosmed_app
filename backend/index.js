@@ -9,7 +9,6 @@ import { Server } from "socket.io"
 const app = express()
 
 try {
-    db.sync({ alter: true })
     await db.authenticate()
     console.log("Database Connected");
 } catch (error) {

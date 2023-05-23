@@ -15,9 +15,7 @@ const Chat = db.define('chat', {
         type: DataTypes.TEXT('long'),
         allowNull: false,
     },
-}, {
-    freezeTableName: true
-})
+},)
 
 Conversation.hasMany(Chat, { foreignKey: 'conversationId' })
 Chat.belongsTo(Conversation, { foreignKey: 'conversationId', onDelete: 'CASCADE' })
