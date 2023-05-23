@@ -93,7 +93,7 @@ export const Login = async (req, res) => {
 export const Logout = async (req, res) => {
     await res.clearCookie("accsessToken", {
         secure: true,
-        sameSite: 'none',
+        sameSite: 'Strict',
         httpOnly: true
     }).status(200).json("User has been logged out")
 }
