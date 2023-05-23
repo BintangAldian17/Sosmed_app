@@ -80,36 +80,36 @@ export const getAllConversation = async (req, res) => {
         const allConversation = [].concat(...conversation.map(item => [...item.sender, ...item.reciver]))
         const getConversationId = allConversation.map(e => e.conversation.id)
         console.log(getConversationId);
-        const lastConversation = await Chat.findAll({
-            where: {
-                conversationId: {
-                    [Op.in]: getConversationId
-                }
-            },
-            group: ['conversationId'],
-            // attributes: ['conversationId', [Sequelize.fn('max', Sequelize.col('createdAt')), 'createdAt'],
-            //     [Sequelize.literal(`(
-            //     SELECT message FROM chats AS c2
-            //     WHERE c2.conversationId = chats.conversationId
-            //     AND c2.createdAt = (
-            //     SELECT MAX(createdAt) FROM chats AS c3
-            //     WHERE c3.conversationId = chats.conversationId
-            //     )
-            //     )`),
-            //         'message'
-            //     ]],
+        // const lastConversation = await Chat.findAll({
+        //     where: {
+        //         conversationId: {
+        //             [Op.in]: getConversationId
+        //         }
+        //     },
+        //     group: ['conversationId'],
+        //     attributes: ['conversationId', [Sequelize.fn('max', Sequelize.col('createdAt')), 'createdAt'],
+        //         [Sequelize.literal(`(
+        //         SELECT message FROM chats AS c2
+        //         WHERE c2.conversationId = chats.conversationId
+        //         AND c2.createdAt = (
+        //         SELECT MAX(createdAt) FROM chats AS c3
+        //         WHERE c3.conversationId = chats.conversationId
+        //         )
+        //         )`),
+        //             'message'
+        //         ]],
 
-        })
-        const results = allConversation.map(user => {
-            const conversation = lastConversation.find(conv => conv.conversationId === user.conversation.id)
-            return {
-                id: user.id, username: user.username, avatar: user.avatar, conversation: conversation ? {
-                    message: conversation.message, conversationId: conversation.conversationId, createdAt: conversation.createdAt
-                } : null
-            }
-        })
+        // })
+        // const results = allConversation.map(user => {
+        //     const conversation = lastConversation.find(conv => conv.conversationId === user.conversation.id)
+        //     return {
+        //         id: user.id, username: user.username, avatar: user.avatar, conversation: conversation ? {
+        //             message: conversation.message, conversationId: conversation.conversationId, createdAt: conversation.createdAt
+        //         } : null
+        //     }
+        // })
         const sortResults = results.sort((a, b) => new Date(b.conversation.createdAt) - new Date(a.conversation.createdAt))
-        return res.status(200).json(sortResults)
+        return res.status(200).json(allConversation)
     } catch (error) {
         console.log(error);
         return res.status(500).json(error)
