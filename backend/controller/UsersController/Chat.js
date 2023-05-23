@@ -89,11 +89,11 @@ export const getAllConversation = async (req, res) => {
             group: ['conversationId'],
             attributes: ['conversationId', [Sequelize.fn('max', Sequelize.col('createdAt')), 'createdAt'],
                 [Sequelize.literal(`(
-                SELECT message FROM chat AS c2
-                WHERE c2.conversationId = chat.conversationId
+                SELECT message FROM chats AS c2
+                WHERE c2.conversationId = chats.conversationId
                 AND c2.createdAt = (
-                SELECT MAX(createdAt) FROM chat AS c3
-                WHERE c3.conversationId = chat.conversationId
+                SELECT MAX(createdAt) FROM chats AS c3
+                WHERE c3.conversationId = chats.conversationId
                 )
                 )`),
                     'message'
