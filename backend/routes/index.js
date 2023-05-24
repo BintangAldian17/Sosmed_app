@@ -16,7 +16,6 @@ router.get("/post/:id", getDetailPost)
 router.delete("/posts/:id", verifyToken, deletePost)
 // upload img
 router.post('/posts/upload', upload.single('file'), (req, res) => {
-    console.log(req.file);
     const file = req.file;
     res.status(200).json(file.filename)
 })
