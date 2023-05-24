@@ -20,6 +20,7 @@ try {
 } catch (error) {
     console.error(error);
 }
+app.use(express.static(path.join(__dirname + 'uploads')));
 
 const port = process.env.PORT || 5000
 
@@ -29,7 +30,6 @@ app.use(cors({
 }))
 app.use(cookieParser())
 app.use(express.json())
-app.use(express.static(path.join(__dirname + 'upload')));
 app.use(router)
 
 const server = app.listen(port, () => {
