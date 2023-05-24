@@ -3,11 +3,14 @@ import db from "./config/Database.js";
 import router from "./routes/index.js";
 import cors from "cors"
 import cookieParser from "cookie-parser";
-import path from "path"
+import { fileURLToPath } from "url"
 import { Server } from "socket.io"
+import path from "path";
 
 
 const app = express()
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 try {
     await db.authenticate()
@@ -23,8 +26,8 @@ app.use(cors({
     origin: ['http://0.0.0.0:3000', 'https://sosmed-app-client.vercel.app', 'http://localhost:3000']
 }))
 app.use(cookieParser())
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json())
-app.use(express.static(`${__dirname}/public`))
 app.use(router)
 
 const server = app.listen(port, () => {
