@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser";
 import { fileURLToPath } from "url"
 import { Server } from "socket.io"
 import path from "path";
+import bodyParser from "body-parser";
 
 
 
@@ -20,6 +21,7 @@ try {
 } catch (error) {
     console.error(error);
 }
+app.use(bodyParser.urlencoded({ extended: true }))
 app.use(express.static(path.join(__dirname + 'uploads')));
 
 const port = process.env.PORT || 5000
