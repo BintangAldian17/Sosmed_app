@@ -8,9 +8,11 @@ import { Server } from "socket.io"
 import path from "path";
 
 
+
 const app = express()
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
+console.log(__dirname);
 
 try {
     await db.authenticate()
@@ -26,7 +28,7 @@ app.use(cors({
     origin: ['http://0.0.0.0:3000', 'https://sosmed-app-client.vercel.app', 'http://localhost:3000']
 }))
 app.use(cookieParser())
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '../client/public/upload')));
 app.use(express.json())
 app.use(router)
 
