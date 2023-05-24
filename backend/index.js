@@ -3,6 +3,7 @@ import db from "./config/Database.js";
 import router from "./routes/index.js";
 import cors from "cors"
 import cookieParser from "cookie-parser";
+import path from "path"
 import { Server } from "socket.io"
 
 
@@ -23,6 +24,7 @@ app.use(cors({
 }))
 app.use(cookieParser())
 app.use(express.json())
+app.use(express.static(`${__dirname}/public`))
 app.use(router)
 
 const server = app.listen(port, () => {
