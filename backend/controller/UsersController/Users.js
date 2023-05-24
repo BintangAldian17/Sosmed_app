@@ -79,9 +79,9 @@ export const Login = async (req, res) => {
         const token = jwt.sign({ id: user.id, username: user.username }, process.env.SECRET_KEY);
 
         res.cookie('accsessToken', token, {
-            // secure: true,
+            secure: true,
             httpOnly: true,
-            // sameSite: 'none',
+            sameSite: 'none',
             // domain: "https://sosmed-app-client.vercel.app",
             maxAge: 2 * 24 * 60 * 60 * 1000
         }).status(200).json({ id: user.id, username: user.username, email: user.email, avatar: user.avatar });
@@ -93,7 +93,7 @@ export const Login = async (req, res) => {
 export const Logout = async (req, res) => {
     await res.clearCookie("accsessToken", {
         secure: true,
-        sameSite: 'Strict',
+        sameSite: 'none',
         httpOnly: true
     }).status(200).json("User has been logged out")
 }
