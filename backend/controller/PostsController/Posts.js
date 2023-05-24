@@ -6,7 +6,6 @@ import multer from "multer"
 import Follows from "../../models/Follows.js";
 import Likes from "../../models/LikesModel.js"
 import { fileURLToPath } from "url"
-import path from "path";
 
 export const createPost = async (req, res) => {
     const { desc, img } = req.body
@@ -87,9 +86,7 @@ export const deletePost = async (req, res) => {
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        const __filename = fileURLToPath(import.meta.url)
-        const __dirname = path.dirname(__filename)
-        cb(null, path.join(__dirname, "../client/publict/upload"))
+        cb(null, "../client/publict/upload")
     },
     filename: (req, file, cb) => {
         cb(null, `${Date.now()}${file.originalname}`)
