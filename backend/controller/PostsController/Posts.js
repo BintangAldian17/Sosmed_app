@@ -6,6 +6,7 @@ import multer from "multer"
 import Follows from "../../models/Follows.js";
 import Likes from "../../models/LikesModel.js"
 import { fileURLToPath } from "url"
+import path from "path";
 
 export const createPost = async (req, res) => {
     const { desc, img } = req.body
