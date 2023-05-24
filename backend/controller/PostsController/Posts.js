@@ -86,7 +86,10 @@ export const deletePost = async (req, res) => {
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, "uploads")
+        const __filename = fileURLToPath(import.meta.url)
+        const __dirname = path.dirname(__filename)
+        console.log(__dirname);
+        cb(null, "uploads/")
     },
     filename: (req, file, cb) => {
         cb(null, `${Date.now()}${file.originalname}`)
