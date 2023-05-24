@@ -28,8 +28,8 @@ app.use(cors({
     origin: ['http://0.0.0.0:3000', 'https://sosmed-app-client.vercel.app', 'http://localhost:3000']
 }))
 app.use(cookieParser())
-app.use(express.static(path.join(__dirname, '../client/public/upload')));
 app.use(express.json())
+app.use(express.static(path.join(__dirname + '../client/public/upload')));
 app.use(router)
 
 const server = app.listen(port, () => {
