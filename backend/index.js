@@ -13,7 +13,6 @@ import bodyParser from "body-parser";
 const app = express()
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
-console.log(__dirname);
 
 try {
     await db.authenticate()
@@ -22,7 +21,7 @@ try {
     console.error(error);
 }
 app.use(bodyParser.urlencoded({ extended: true }))
-app.use(express.static(path.join(__dirname + 'uploads')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 const port = process.env.PORT || 5000
 
