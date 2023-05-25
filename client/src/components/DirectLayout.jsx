@@ -22,7 +22,7 @@ const DirectLayout = () => {
   const queryClient = useQueryClient();
   const location = useLocation();
 
-  const { data: chatInbox, isLoading: isLoadingChatInbox } = useGetInbox({ currentUserId: currentUser?.id });
+  const { data: chatInbox, isLoading: isLoadingChatInbox } = useGetInbox();
   const {
     data: detailChat,
     isLoading: isLoadingDetailChat,
@@ -34,11 +34,13 @@ const DirectLayout = () => {
     setCurrentChat(e);
   };
 
+  // Socket io React Query
+
   useEffect(() => {
     if (socket === null) return;
     socket?.on("getMessage", (res) => {
       if (res.conversationId !== currentChat && location.pathname !== "/direct") {
-        queryClient.setQueryData(["message-inbox", currentUser.id], (oldData) => {
+        queryClient.setQueryData(["message-inbox"], (oldData) => {
           if (!oldData) return null;
           const newData = oldData.map((user) => {
             if (user.conversation.conversationId === res.conversationId) {
@@ -68,7 +70,7 @@ const DirectLayout = () => {
           }
           return [...oldData, res];
         });
-        queryClient.setQueryData(["message-inbox", currentUser.id], (oldData) => {
+        queryClient.setQueryData(["message-inbox"], (oldData) => {
           if (!oldData) return null;
           const newData = oldData.map((user) => {
             if (user.conversation.conversationId === res.conversationId) {
@@ -118,7 +120,7 @@ const DirectLayout = () => {
     if (socket === null) return;
     socket?.emit("sendMessage", {
       ...newMessage,
-      senderId: currentUser.id,
+      senderId: currentUser?.id,
       reciverId: participan?.id,
       conversationId: currentChat,
     });

@@ -1,8 +1,8 @@
 import { publicClient } from "../../axios/RequestMethod";
 import { useQuery } from "@tanstack/react-query";
 
-const getInbox = async ({ currentUserId }) => {
-    const { data } = await publicClient.get(`/conversations/${currentUserId}`)
+const getInbox = async () => {
+    const { data } = await publicClient.get(`/conversation`)
     return data
 }
 
@@ -21,10 +21,8 @@ const getChatParticipan = async ({ conversationId }) => {
     return data
 }
 
-export const useGetInbox = ({ currentUserId }) => {
-    return useQuery(['message-inbox', currentUserId], () => getInbox({ currentUserId }), {
-        enabled: !!currentUserId
-    })
+export const useGetInbox = () => {
+    return useQuery(['message-inbox'], getInbox)
 }
 
 export const useGetLastChat = ({ conversationId }) => {
