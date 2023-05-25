@@ -51,7 +51,7 @@ router.delete("/likes/:id", verifyToken, unlikePost)
 router.post("/conversation", verifyToken, sendMessage)
 router.get("/conversation/:id", verifyToken, getConversation)
 router.get("/chat/:id", getLastConversation)
-router.get("/conversation", getAllConversation)
+router.get("/conversation", verifyToken, getAllConversation)
 router.get("/chats/:id", verifyToken, getDetailParticipan)
 
 export default router
