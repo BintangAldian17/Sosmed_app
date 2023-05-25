@@ -68,11 +68,10 @@ export const getConversation = async (req, res) => {
 }
 
 export const getAllConversation = async (req, res) => {
-    const { userId } = req.params
     try {
         const conversation = await Users.findAll({
             where: {
-                id: userId
+                id: req.id
             },
             attributes: [],
             include: [{ model: Users, as: 'sender', through: Conversation, attributes: ['id', 'username', 'avatar'] }, { model: Users, as: 'reciver', through: Conversation, attributes: ['id', 'username', 'avatar'] }]
