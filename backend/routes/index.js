@@ -6,7 +6,7 @@ import { Register, findUser, Login, Logout } from "../controller/UsersController
 import { getFolloweds, getFollowers, unAndFollow } from "../controller/UsersController/UsersFeature.js"
 import { getLikesPost, likePosts, unlikePost } from "../controller/PostsController/Likes.js"
 import { verifyToken } from "../middleware/jwt.js"
-import { getAllConversation, getConversation, getDetailParticipan, getLastConversation, sendMessage } from "../controller/UsersController/Chat.js"
+import { getAllConversation, getConversation, getDetailParticipan, getLastConversation, sendMessage, sendPersonalMessage } from "../controller/UsersController/Chat.js"
 const router = express.Router()
 
 // API for Posts
@@ -52,6 +52,7 @@ router.post("/conversation", verifyToken, sendMessage)
 router.get("/conversation/:id", verifyToken, getConversation)
 router.get("/chat/:id", getLastConversation)
 router.get("/conversation", verifyToken, getAllConversation)
+router.post("/chat", verifyToken, sendPersonalMessage)
 router.get("/chats/:id", verifyToken, getDetailParticipan)
 
 export default router

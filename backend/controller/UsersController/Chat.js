@@ -29,19 +29,26 @@ export const sendMessage = async (req, res) => {
                 message: message
             })
             return res.status(200).json('Conversation has been Created')
-        } else if (checkConversation) {
-            await Chat.create({
-                conversationId: checkConversation.id,
-                senderId: req.id,
-                message: message
-            })
-            return res.status(200).json('Sending Chat Successfuly')
         } else {
 
             return res.status(400).json('Conversation Allready exsist')
         }
     } catch (error) {
         console.log(error);
+        res.status(500).json(error)
+    }
+}
+
+export const sendPersonalMessage = async (req, res) => {
+    const { conversationId, message } = req.body
+    try {
+        await Chat.create({
+            conversation: conversationId,
+            senderId: req.id,
+            message: message
+        })
+        res.status(200).json('message send success')
+    } catch (error) {
         res.status(500).json(error)
     }
 }
