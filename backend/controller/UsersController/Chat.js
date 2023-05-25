@@ -30,7 +30,6 @@ export const sendMessage = async (req, res) => {
             })
             return res.status(200).json('Conversation has been Created')
         } else {
-
             return res.status(400).json('Conversation Allready exsist')
         }
     } catch (error) {
@@ -43,7 +42,7 @@ export const sendPersonalMessage = async (req, res) => {
     const { conversationId, message } = req.body
     try {
         await Chat.create({
-            conversation: conversationId,
+            conversationId: conversationId,
             senderId: req.id,
             message: message
         })
