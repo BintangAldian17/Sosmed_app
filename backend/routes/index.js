@@ -16,7 +16,7 @@ router.get("/post/:id", getDetailPost)
 router.delete("/posts/:id", verifyToken, deletePost)
 // upload img
 router.post('/posts/upload', upload.single('file'), (req, res) => {
-    
+
     const file = req.file;
     res.status(200).json(file.filename)
 })
@@ -51,7 +51,7 @@ router.delete("/likes/:id", verifyToken, unlikePost)
 router.post("/conversation", verifyToken, sendMessage)
 router.get("/conversation/:id", verifyToken, getConversation)
 router.get("/chat/:id", getLastConversation)
-router.get("/conversations/:userId", getAllConversation)
+router.get("/conversation", getAllConversation)
 router.get("/chats/:id", verifyToken, getDetailParticipan)
 
 export default router
