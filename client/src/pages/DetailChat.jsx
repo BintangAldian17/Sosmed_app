@@ -6,7 +6,7 @@ import { AuthContext } from "../context-provider/AuthContextProvider";
 import { BsEmojiSmile, BsImageFill, BsTelephone } from "react-icons/bs";
 import { HiOutlineVideoCamera } from "react-icons/hi";
 import FadeLoader from "react-spinners/FadeLoader";
-import { useSendMessage } from "../hooks/Chats/useSendMessage";
+import { useSendMessage, useSendPersonalMessage } from "../hooks/Chats/useSendMessage";
 import { useForm } from "react-hook-form";
 import { useQueryClient } from "@tanstack/react-query";
 import { ChatContext } from "../context-provider/ChatContext";
@@ -49,7 +49,7 @@ const DetailChat = ({
   //   }
   // }, [allMessage]);
 
-  const { mutate: sendMessage } = useSendMessage({
+  const { mutate: sendMessage } = useSendPersonalMessage({
     onSuccess: () => {
       queryClient.invalidateQueries("");
       queryClient.invalidateQueries("detail-chat");

@@ -9,7 +9,7 @@ import DetailChat from "../pages/DetailChat";
 import { BsEmojiSmile, BsImageFill, BsTelephone } from "react-icons/bs";
 import { HiOutlineVideoCamera } from "react-icons/hi";
 import { useForm } from "react-hook-form";
-import { useSendMessage } from "../hooks/Chats/useSendMessage";
+import { useSendMessage, useSendPersonalMessage } from "../hooks/Chats/useSendMessage";
 import { useQueryClient } from "@tanstack/react-query";
 import { DateNow } from "../utils/DateNow";
 
@@ -106,7 +106,7 @@ const DirectLayout = () => {
 
   const { register, handleSubmit, formState, reset } = form;
 
-  const { mutate: sendMessage } = useSendMessage({
+  const { mutate: sendMessage } = useSendPersonalMessage({
     onSuccess: () => {
       queryClient.invalidateQueries("message-inbox");
       queryClient.invalidateQueries("detail-chat");
@@ -128,7 +128,7 @@ const DirectLayout = () => {
 
   const handleSendMessage = (message) => {
     setNewMessage(message);
-    sendMessage({ ...message, reciverId: participan?.id });
+    sendMessage({ ...message, conversationId: currentChat });
   };
 
   const lastChatRef = useRef(null);
