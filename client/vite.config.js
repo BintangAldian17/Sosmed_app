@@ -6,5 +6,11 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: 3000,
-  }
+    proxy: {
+      '/api': {
+        target: 'https://sosmedapp-production.up.railway.app',
+        changeOrigin: true,
+      },
+    },
+  },
 })

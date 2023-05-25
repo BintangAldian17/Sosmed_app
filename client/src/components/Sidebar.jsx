@@ -36,7 +36,7 @@ const Sidebar = () => {
               src={
                 <img
                   className="w-full h-full object-cover rounded-full"
-                  src={`../../publict/upload/${currentUser.avatar}`}
+                  src={`https://sosmedapp-production.up.railway.app/uploads/${currentUser.avatar}`}
                   alt="Bordered avatar"
                 />
               }

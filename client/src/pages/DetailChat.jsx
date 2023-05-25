@@ -93,7 +93,11 @@ const DetailChat = ({
       ref={lastChatRef}>
       {currentUser.id !== senderId ? (
         <div className=" w-6 h-6 overflow-hidden rounded-full self-end">
-          <img alt="user_pic" src={`../../publict/upload/${participan?.avatar}`} className=" w-full h-full" />
+          <img
+            alt="user_pic"
+            src={`https://sosmedapp-production.up.railway.app/uploads/${participan?.avatar}`}
+            className=" w-full h-full"
+          />
         </div>
       ) : null}
       <div

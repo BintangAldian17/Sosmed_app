@@ -34,7 +34,11 @@ const Inbox = ({
         setUnRead(false);
       }}>
       <div className=" w-14 h-14 rounded-full overflow-hidden">
-        <img alt="pic_user" src={`../../publict/upload/${avatar}`} className=" w-full h-full" />
+        <img
+          alt="pic_user"
+          src={`https://sosmedapp-production.up.railway.app/uploads/${avatar}`}
+          className=" w-full h-full"
+        />
       </div>
       <div className=" flex flex-col flex-grow max-w-full justify-center">
         <h1 className=" font-semibold text-lg">{username}</h1>

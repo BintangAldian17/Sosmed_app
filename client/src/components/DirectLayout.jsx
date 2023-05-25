@@ -178,7 +178,6 @@ const DirectLayout = () => {
                     <h1 className=" text-xl font-semibold pb-2">{currentUser?.username}</h1>
                   </div>
                   {chatInbox?.map((e, i) => {
-                    console.log(e.conversation.conversationId);
                     return (
                       <Inbox
                         read={e.unRead}
@@ -215,7 +214,7 @@ const DirectLayout = () => {
                     <div className=" w-7 h-7 overflow-hidden rounded-full">
                       <img
                         alt="user_pic"
-                        src={`../../publict/upload/${participan?.avatar}`}
+                        src={`https://sosmedapp-production.up.railway.app/uploads/${participan?.avatar}`}
                         className=" w-full h-full"
                       />
                     </div>

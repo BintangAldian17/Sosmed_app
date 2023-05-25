@@ -30,7 +30,7 @@ const Navbar = () => {
       const res = await publicClient.post("/posts/upload", fromData);
       return res.data;
     } catch (error) {
-      console.log(error); 
+      console.log(error);
     }
   };
 
@@ -54,6 +54,11 @@ const Navbar = () => {
     setImg(image);
     setPreview(URL.createObjectURL(image));
   };
+  const fromDa = new FormData();
+  const fd = fromDa.append("file", img);
+
+  console.log(img);
+  console.log(fd);
   const handleCreatePost = async () => {
     let imgUrl = "";
     if (img) imgUrl = await upload();
@@ -108,7 +113,10 @@ const Navbar = () => {
                     {el?.avatar === null ? (
                       <img className=" w-full h-full object-cover rounded-full" src={userAvatar} alt="user_avatar" />
                     ) : (
-                      <img className=" w-full h-full object-cover" src={`../../publict/upload/${el?.avatar}`} />
+                      <img
+                        className=" w-full h-full object-cover"
+                        src={`https://sosmedapp-production.up.railway.app/uploads/${el?.avatar}`}
+                      />
                     )}
                     <img className=" w-full h-full" />
                   </div>

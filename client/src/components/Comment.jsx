@@ -9,7 +9,11 @@ export const Comment = ({ avatar, username, createdAt, text, i, detailPostId, id
   return (
     <div className=" flex gap-x-4 items-start w-full h-fit" key={i}>
       <div className=" w-8 h-8 rounded-full overflow-hidden">
-        <img src={`../../publict/upload/${avatar}`} alt="avatar-user" className=" w-full h-full object-cover" />
+        <img
+          src={`https://sosmedapp-production.up.railway.app/uploads/${avatar}`}
+          alt="avatar-user"
+          className=" w-full h-full object-cover"
+        />
       </div>
       <div className=" flex flex-grow flex-col md:gap-y-2 gap-y-1 h-fit">
         <span className=" text-sm font-bold">
@@ -32,7 +36,7 @@ export const Comment = ({ avatar, username, createdAt, text, i, detailPostId, id
                   <div className=" flex gap-x-4 items-start w-full h-fit" key={i}>
                     <div className=" w-7 h-7 rounded-full overflow-hidden">
                       <img
-                        src={`../../publict/upload/${el?.user?.avatar}`}
+                        src={`https://sosmedapp-production.up.railway.app/uploads/${el?.user?.avatar}`}
                         alt="avatar-user"
                         className=" w-full h-full object-cover"
                       />

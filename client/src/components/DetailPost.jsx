@@ -88,7 +88,10 @@ const DetailPost = ({ likes, currentUser, modalDetailPost, closeModalDetailPost,
                     {isLoadingDetailPost ? (
                       <div className=" w-full h-full bg-[#1f2127]"></div>
                     ) : (
-                      <img src={`../../publict/upload/${detailPost?.img}`} className=" w-full h-full object-cover " />
+                      <img
+                        src={`https://sosmedapp-production.up.railway.app/uploads/${detailPost?.img}`}
+                        className=" w-full h-full object-cover "
+                      />
                     )}
                   </div>
                   <div className=" w-full md:max-w-[50%] ">
@@ -105,7 +108,7 @@ const DetailPost = ({ likes, currentUser, modalDetailPost, closeModalDetailPost,
                             <div className=" flex gap-x-3 items-center">
                               <div className=" w-9 h-9 rounded-full overflow-hidden">
                                 <img
-                                  src={`../../publict/upload/${detailPost?.user?.avatar}`}
+                                  src={`https://sosmedapp-production.up.railway.app/uploads/${detailPost?.user?.avatar}`}
                                   alt="avatar-user"
                                   className=" w-full h-full object-cover"
                                 />
@@ -127,7 +130,7 @@ const DetailPost = ({ likes, currentUser, modalDetailPost, closeModalDetailPost,
                           <div className=" md:flex gap-x-4 items-start h-fit w-full hidden">
                             <div className=" w-8 h-8 rounded-full overflow-hidden">
                               <img
-                                src={`../../publict/upload/${detailPost?.user?.avatar}`}
+                                src={`https://sosmedapp-production.up.railway.app/uploads/${detailPost?.user?.avatar}`}
                                 alt="avatar-user"
                                 className=" w-full h-full object-cover"
                               />

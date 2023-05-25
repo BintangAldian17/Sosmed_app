@@ -66,7 +66,7 @@ const Posts = ({ postImage, id, userInfo, i, likes, totalComments }) => {
         <div className=" flex items-center gap-x-2">
           <div className=" w-7 h-7 rounded-full">
             <img
-              src={`../../publict/upload/${userInfo?.avatar}`}
+              src={`https://sosmedapp-production.up.railway.app/uploads/${userInfo?.avatar}`}
               className=" w-full h-full object-cover rounded-full"
             />
           </div>
@@ -159,7 +159,10 @@ const Posts = ({ postImage, id, userInfo, i, likes, totalComments }) => {
         </div>
       </div>
       <div className=" w-full h-full  overflow-hidden ">
-        <img src={`../../publict/upload/${postImage}`} className=" w-full h-full object-cover rounded-lg" />
+        <img
+          src={`https://sosmedapp-production.up.railway.app/uploads/${postImage}`}
+          className=" w-full h-full object-cover rounded-lg"
+        />
       </div>
       {/* Posts Mobile Layout*/}
       <div className=" w-full flex justify-between items-center px-1 lg:hidden">
