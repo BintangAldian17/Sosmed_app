@@ -107,8 +107,10 @@ export const getAllConversation = async (req, res) => {
                 } : null
             }
         })
-        const sortResults = results.sort((a, b) => new Date(b.conversation.createdAt) - new Date(a.conversation.createdAt))
-        return res.status(200).json(sortResults)
+        if (results !== null) {
+            const sortResults = results.sort((a, b) => new Date(b.conversation.createdAt) - new Date(a.conversation.createdAt))
+            return res.status(200).json(sortResults)
+        }
         // const user = await Users.findByPk(userId, {
         //     attributes: [],
         //     include: [{ model: Users, as: 'sender', through: Conversation, attributes: ['id', 'username', 'avatar'] }, { model: Users, as: 'reciver', through: Conversation, attributes: ['id', 'username', 'avatar'] }]
