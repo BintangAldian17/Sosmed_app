@@ -27,7 +27,7 @@ const port = process.env.PORT || 5000
 
 app.use(cors({
     credentials: true,
-    origin: ['http://0.0.0.0:3000', 'https://sosmed-app-client.vercel.app', 'http://localhost:3000']
+    origin: ['http://0.0.0.0:3000', 'https://sosmed-app-alpha.vercel.app', 'http://localhost:3000']
 }))
 app.use(cookieParser())
 app.use(express.json())
@@ -40,7 +40,7 @@ const server = app.listen(port, () => {
 // Socket config
 
 const io = new Server(server, {
-    cors: ['http://localhost:3000', 'https://sosmed-app-client.vercel.app']
+    cors: ['http://localhost:3000', 'https://sosmed-app-alpha.vercel.app']
 })
 
 let onlineUsers = []
